@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:formvalid/screens/homescreen.dart';
+import 'package:formvalid/screens/signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: SignupScreen(),
     );
   }
 }
