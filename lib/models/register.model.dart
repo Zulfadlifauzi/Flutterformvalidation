@@ -17,13 +17,13 @@ class RegisterRequestModel {
   String? email;
   String? password;
 
-  RegisterRequestModel({this.email, this.password,this.name});
+  RegisterRequestModel({this.name,this.email,this.password});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
-      'email': email!.trim(),
-      'password': password!.trim(),
-      'name': name!.trim()
+      'name': name,
+      'email': email,
+      'password': password,
     };
 
     return map;

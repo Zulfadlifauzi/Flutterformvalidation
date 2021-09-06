@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:formvalid/models/api.dart';
-import 'package:formvalid/models/register.model.dart';
+import 'package:formvalid/models/login_model.dart';
+import 'package:formvalid/models/loginapi.dart';
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/home.dart';
-import 'package:formvalid/screens/login.dart';
+import 'package:formvalid/screens/signup.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends State<LoginScreen> {
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
 
-  late RegisterRequestModel registerRequestModel;
+  late LoginRequestModel loginrequestModel;
   bool hidePassword = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
@@ -27,7 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    registerRequestModel = new RegisterRequestModel();
+    loginrequestModel = new LoginRequestModel();
   }
 
   @override
@@ -47,16 +47,6 @@ class _SignupScreenState extends State<SignupScreen> {
         key: scaffoldKey,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-        icon:Icon(Icons.arrow_back,color: Colors.black),
-        onPressed: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-        },
-
-        )
       ),
       backgroundColor: Color(0xFFffffff),
       body: SingleChildScrollView(
@@ -69,14 +59,14 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 SizedBox(height: height * 0.04),
                 Text(
-                  'Prizes and Suprises',
+                  'Here to Get',
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF363f93)),
                 ),
                 Text(
-                  'Await you !',
+                  'Welcome !',
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -85,23 +75,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(
                   height: height * 0.03,
                 ),
-                TextFormField(
-                    decoration: InputDecoration(labelText: 'Enter your name'),
-                    keyboardType: TextInputType.name,
-                    onSaved: (input) => registerRequestModel.name = input,
-                    validator: (value) {
-                      if (value!.isEmpty ||
-                          !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
-                        return 'Enter correct name';
-                      } else {
-                        return null;
-                      }
-                    }),
                 SizedBox(height: height * 0.05),
                 TextFormField(
                     decoration: InputDecoration(labelText: 'Enter your email'),
                     keyboardType: TextInputType.emailAddress,
-                    onSaved: (input) => registerRequestModel.email = input,
+                    onSaved: (input) => loginrequestModel.email = input,
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
                       EmailValidator(errorText: 'Not A Valid Email')
@@ -110,7 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Enter your password'),
                   keyboardType: TextInputType.text,
-                  onSaved: (input) => registerRequestModel.password = input,
+                  onSaved: (input) => loginrequestModel.password = input,
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
                     MinLengthValidator(6,
@@ -122,33 +100,36 @@ class _SignupScreenState extends State<SignupScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Sign up',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF363f93)),
-                    ),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF363f93))),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignupScreen()));
+                        },
+                        child: Text('Sign up')),
                     TextButton(
                       onPressed: () {
-                      Navigator.push(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => HomePageScreen()));
-
                         if (validateAndSave()) {
-                         setState(() {
-                         isApiCallprocess = true;
-                                    });
+                          setState(() {
+                            isApiCallprocess = true;
+                          });
                           APIService apiService = new APIService();
-                          apiService
-                              .register(registerRequestModel)
-                              .then((value) => {
-                                    setState(() {
-                                      isApiCallprocess = false;
-                                    }),
-                                  });
-                          print(registerRequestModel.toJson());
+                          apiService.login(loginrequestModel).then((value) => {
+                                setState(() {
+                                  isApiCallprocess = false;
+                                }),
+                              });
+                          print(loginrequestModel.toJson());
                           // ignore: deprecated_member_use
                         }
                       },
