@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:formvalid/screens/login.dart';
-import 'package:formvalid/screens/signup.dart';
 
 void main() {
   runApp(MyApp());

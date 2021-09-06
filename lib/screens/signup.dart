@@ -3,7 +3,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/api.dart';
 import 'package:formvalid/models/register.model.dart';
 import 'package:formvalid/progressHUD.dart';
-import 'package:formvalid/screens/home.dart';
 import 'package:formvalid/screens/login.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -122,19 +121,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Sign up',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF363f93)),
-                    ),
                     TextButton(
                       onPressed: () {
-                      Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePageScreen()));
+                      // Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => HomePageScreen()));
 
                         if (validateAndSave()) {
                          setState(() {
@@ -153,15 +145,16 @@ class _SignupScreenState extends State<SignupScreen> {
                         }
                       },
                       child: Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFF363f93),
+                        margin: EdgeInsets.only(left: 100.0),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left:35,top: 10),
+                          child: Text('Register',style: TextStyle(color: Colors.white),),
                         ),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
+                        height: 40,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Color(0xFF363f93),
                         ),
                       ),
                     )

@@ -3,7 +3,6 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/login_model.dart';
 import 'package:formvalid/models/loginapi.dart';
 import 'package:formvalid/progressHUD.dart';
-import 'package:formvalid/screens/home.dart';
 import 'package:formvalid/screens/signup.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -112,13 +111,13 @@ class _SignupScreenState extends State<LoginScreen> {
                               MaterialPageRoute(
                                   builder: (context) => SignupScreen()));
                         },
-                        child: Text('Sign up')),
+                        child: Text('Sign up',style: TextStyle(color: Color(0xFF363f93)))),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePageScreen()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => HomePageScreen()));
                         if (validateAndSave()) {
                           setState(() {
                             isApiCallprocess = true;
@@ -146,6 +145,26 @@ class _SignupScreenState extends State<LoginScreen> {
                         ),
                       ),
                     )
+                  ],
+                ),
+                SizedBox(height: height*0.12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        style: TextButton.styleFrom(
+                            textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF363f93))),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignupScreen()));
+                        },
+                        child: Text('Sign in',style: TextStyle(color: Color(0xFF363f93)))),
+                        Text('Forgot password',style: TextStyle(color: Colors.grey[500]),)
                   ],
                 ),
               ],

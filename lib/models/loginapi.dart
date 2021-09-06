@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class APIService {
   Future<LoginResponseModel> login(
       LoginRequestModel requestModel) async {
-    String url = 'http://api.staging.tarsoft.co/api/login';
+    String url = 'https://reqres.in/api/login';
 
     final response =
         await http.post(Uri.parse('$url'), body: requestModel.toJson());
