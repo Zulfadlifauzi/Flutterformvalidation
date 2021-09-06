@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:formvalid/models/api.dart';
+import 'package:formvalid/models/register.model.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -10,34 +11,28 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   TextEditingController passController = TextEditingController();
-  TextEditingController repassController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
 
-  _register() {
-    var data = {
-      'name': nameController.text,
-      'email': emailController.text,
-      'password': passController.text,
-    };
-
-    var res = CallApi.postData(data, 'register');
-  }
+  late RegisterRequestModel requestModel;
 
   @override
   void initState() {
     super.initState();
+    requestModel = new RegisterRequestModel();
   }
 
   // final formKey = GlobalKey<FormState>();
-  // String name = '';
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    bool hidePassword = true;
     final double height = MediaQuery.of(context).size.height;
     // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       appBar: AppBar(
-        // key: _scaffoldKey,
+        key: scaffoldKey,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -47,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
           children: [
             Container(
               padding: EdgeInsets.only(left: 40, right: 40),
-              // key: formKey,
+              key: globalFormKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,32 +64,42 @@ class _SignupScreenState extends State<SignupScreen> {
                   SizedBox(
                     height: height * 0.03,
                   ),
-                  TextInput(
-                      textString: "Name",
-                      textController: nameController,
-                      obscureText: false),
+                  new TextFormField(
+                      decoration: new InputDecoration(
+                        hintText: 'Name',
+                      ),
+                      keyboardType: TextInputType.name,
+                      onSaved: (input) => requestModel.name = input,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      }),
                   SizedBox(height: height * 0.05),
-                  TextInput(
-                      textString: "Email",
-                      textController: emailController,
-                      obscureText: false),
-                  SizedBox(
-                    height: height * .05,
+                  new TextFormField(
+                    decoration: new InputDecoration(
+                      hintText: 'Email',
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    onSaved: (input) => requestModel.email = input,
+                    validator: (input) => input!.contains('@')
+                        ? 'Email Id should be valid'
+                        : null,
                   ),
-                  TextInput(
-                      textString: "Password",
-                      textController: passController,
-                      obscureText: true),
-                  SizedBox(
-                    height: height * .05,
+                  SizedBox(height: height * 0.05),
+                  new TextFormField(
+                    decoration: new InputDecoration(
+                      hintText: 'Password',
+                    ),
+                    keyboardType: TextInputType.text,
+                    onSaved: (input) => requestModel.password = input,
+                    validator: (input) => input!.length < 6
+                        ? 'Password should be more than 6 characters'
+                        : null,
+                    obscureText: hidePassword,
                   ),
-                  TextInput(
-                      textString: "Password",
-                      textController: repassController,
-                      obscureText: true),
-                  SizedBox(
-                    height: height * .05,
-                  ),
+                  SizedBox(height: height * 0.05),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -107,7 +112,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _register();
+                          if (validateAndSave()) {
+                            print(requestModel.toJson());
+                          }
                         },
                         child: Container(
                           height: 60,
@@ -154,33 +161,47 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 }
 
-// ignore: must_be_immutable
-class TextInput extends StatelessWidget {
-  final String textString;
-  TextEditingController textController;
-  final bool obscureText;
-  TextInput(
-      {Key? key,
-      required this.textString,
-      required this.textController,
-      required this.obscureText})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyle(color: Color(0xFF000000)),
-      cursorColor: Color(0xFF9b9b9b),
-      controller: textController,
-      keyboardType: TextInputType.text,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        hintText: this.textString,
-        hintStyle: TextStyle(
-            color: Color(0xFF9b9b9b),
-            fontSize: 15,
-            fontWeight: FontWeight.normal),
-      ),
-    );
+bool validateAndSave() {
+  var globalFormKey;
+  final form = globalFormKey.currentState;
+  if (form.validate()) {
+    form.save();
+    return true;
   }
+  return false;
 }
+
+
+
+// ignore: must_be_immutable
+// class TextInput extends StatelessWidget {
+//   final String textString;
+//   TextEditingController textController;
+//   final bool obscureText;
+//   TextInput(
+//       {Key? key,
+//       required this.textString,
+//       required this.textController,
+//       required this.obscureText})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextField(
+//       style: TextStyle(color: Color(0xFF000000)),
+//       cursorColor: Color(0xFF9b9b9b),
+//       controller: textController,
+//       keyboardType: TextInputType.text,
+//       obscureText: obscureText,
+//       decoration: InputDecoration(
+//         hintText: this.textString,
+//         hintStyle: TextStyle(
+//             color: Color(0xFF9b9b9b),
+//             fontSize: 15,
+//             fontWeight: FontWeight.normal),
+//       ),
+//     );
+//   }
+// }
+
+
