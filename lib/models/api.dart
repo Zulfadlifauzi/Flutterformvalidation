@@ -11,6 +11,7 @@ class APIService {
     final response =
         await http.post(Uri.parse('$url'), body: requestModel.toJson());
     if (response.statusCode == 200 || response.statusCode == 400) {
+      print(response.statusCode);
       return RegisterResponseModel.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to load data');

@@ -18,10 +18,11 @@ class _SignupScreenState extends State<LoginScreen> {
   TextEditingController nameController = new TextEditingController();
 
   late LoginRequestModel loginrequestModel;
-  bool hidePassword = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
+
   bool isApiCallprocess = false;
+  bool hidePassword = true;
 
   @override
   void initState() {
@@ -111,13 +112,15 @@ class _SignupScreenState extends State<LoginScreen> {
                               MaterialPageRoute(
                                   builder: (context) => SignupScreen()));
                         },
-                        child: Text('Sign up',style: TextStyle(color: Color(0xFF363f93)))),
+                        child: Text('Sign up',
+                            style: TextStyle(color: Color(0xFF363f93)))),
                     TextButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) => HomePageScreen()));
+                        final text = 'Login Succesfully';
+                        final usernf = 'User not found';
+                        final snackBar = SnackBar(content: Text(text));
+                        final snackBar1 =
+                            SnackBar(content: Text(usernf));
                         if (validateAndSave()) {
                           setState(() {
                             isApiCallprocess = true;
@@ -127,8 +130,23 @@ class _SignupScreenState extends State<LoginScreen> {
                                 setState(() {
                                   isApiCallprocess = false;
                                 }),
+                                if (value.token!.isNotEmpty)
+                                  {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar)
+                                  }
+                                else
+                                  {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar1)
+                                  }
                               });
                           print(loginrequestModel.toJson());
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePageScreen()));
+
                           // ignore: deprecated_member_use
                         }
                       },
@@ -147,7 +165,7 @@ class _SignupScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
-                SizedBox(height: height*0.12),
+                SizedBox(height: height * 0.12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -163,8 +181,12 @@ class _SignupScreenState extends State<LoginScreen> {
                               MaterialPageRoute(
                                   builder: (context) => SignupScreen()));
                         },
-                        child: Text('Sign in',style: TextStyle(color: Color(0xFF363f93)))),
-                        Text('Forgot password',style: TextStyle(color: Colors.grey[500]),)
+                        child: Text('Sign in',
+                            style: TextStyle(color: Color(0xFF363f93)))),
+                    Text(
+                      'Forgot password',
+                      style: TextStyle(color: Colors.grey[500]),
+                    )
                   ],
                 ),
               ],

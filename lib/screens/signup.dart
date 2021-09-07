@@ -123,11 +123,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     TextButton(
                       onPressed: () {
-                      // Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) => HomePageScreen()));
-
+                        final text = 'Register Succesfully';
+                        final snackBar = SnackBar(content: Text(text));
                         if (validateAndSave()) {
                          setState(() {
                          isApiCallprocess = true;
@@ -139,8 +136,19 @@ class _SignupScreenState extends State<SignupScreen> {
                                     setState(() {
                                       isApiCallprocess = false;
                                     }),
+                                   if (value.token!.isNotEmpty)
+                                  {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar)
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar)
+                                  }
                                   });
                           print(registerRequestModel.toJson());
+                          // Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) => HomePageScreen()));
                           // ignore: deprecated_member_use
                         }
                       },
