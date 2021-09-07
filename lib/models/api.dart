@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 class APIService {
   Future<RegisterResponseModel> register(
       RegisterRequestModel requestModel) async {
+    // String url = 'http://api.staging.tarsoft.co/api/register';
     String url = 'https://reqres.in/api/register';
 
     final response =
