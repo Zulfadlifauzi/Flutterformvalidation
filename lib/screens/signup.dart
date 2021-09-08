@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:formvalid/models/api.dart';
-import 'package:formvalid/models/register.model.dart';
+import 'package:formvalid/models/register_model.dart';
+import 'package:formvalid/models/registerapi.dart';
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/login.dart';
 
@@ -43,20 +43,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        key: scaffoldKey,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-        icon:Icon(Icons.arrow_back,color: Colors.black),
-        onPressed: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-        },
-
-        )
-      ),
+          key: scaffoldKey,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+          )),
       backgroundColor: Color(0xFFffffff),
       body: SingleChildScrollView(
         child: Form(
@@ -85,9 +81,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: height * 0.03,
                 ),
                 TextFormField(
-                    decoration: InputDecoration(labelText: 'Enter your name'),
-                    keyboardType: TextInputType.name,
+                    // controller: nameController,
                     onSaved: (input) => registerRequestModel.name = input,
+                    decoration: InputDecoration(labelText: 'Enter your name'),
                     validator: (value) {
                       if (value!.isEmpty ||
                           !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
@@ -98,18 +94,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     }),
                 SizedBox(height: height * 0.05),
                 TextFormField(
-                    decoration: InputDecoration(labelText: 'Enter your email'),
-                    keyboardType: TextInputType.emailAddress,
+                    // controller: emailController,
                     onSaved: (input) => registerRequestModel.email = input,
+                    decoration: InputDecoration(labelText: 'Enter your email'),
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
                       EmailValidator(errorText: 'Not A Valid Email')
                     ])),
                 SizedBox(height: height * 0.05),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Enter your password'),
-                  keyboardType: TextInputType.text,
+                  // controller: passController,
                   onSaved: (input) => registerRequestModel.password = input,
+                  decoration: InputDecoration(labelText: 'Enter your password'),
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
                     MinLengthValidator(6,
@@ -122,50 +118,55 @@ class _SignupScreenState extends State<SignupScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: () {
-                        final text = 'Register Succesfully';
-                        final snackBar = SnackBar(content: Text(text));
-                        if (validateAndSave()) {
-                         setState(() {
-                         isApiCallprocess = true;
+                        onPressed: () {
+                          if (validateAndSave()) {
+                            setState(() {
+                              isApiCallprocess = true;
+                            });
+                            RegisterAPI registerAPI = new RegisterAPI();
+                            registerAPI
+                                .register(registerRequestModel)
+                                .then((value) => {
+                                      setState(() {
+                                        isApiCallprocess = false;
+                                      }),
+                                      if (value.token!.isNotEmpty)
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text('Bad request boi')))
+                                        }
+                                      else
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      'Register Successfully')))
+                                        }
                                     });
-                          APIService apiService = new APIService();
-                          apiService
-                              .register(registerRequestModel)
-                              .then((value) => {
-                                    setState(() {
-                                      isApiCallprocess = false;
-                                    }),
-                                   if (value.token!.isNotEmpty)
-                                  {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar)
-                                  }else{
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar)
-                                  }
-                                  });
-                          print(registerRequestModel.toJson());
-                          // Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) => HomePageScreen()));
-                          // ignore: deprecated_member_use
-                        }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(left: 100.0),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left:35,top: 10),
-                          child: Text('Register',style: TextStyle(color: Colors.white),),
-                        ),
-                        height: 40,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: Color(0xFF363f93),
-                        ),
-                      ),
-                    )
+                            print(registerRequestModel.toJson());
+                          }
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(left: 100.0),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 35, top: 10),
+                            child: Text(
+                              'Register',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          height: 40,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Color(0xFF363f93),
+                          ),
+                        )),
+                    SizedBox(
+                      height: height * 0.09,
+                    ),
                   ],
                 ),
               ],

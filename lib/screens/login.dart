@@ -15,19 +15,17 @@ class LoginScreen extends StatefulWidget {
 class _SignupScreenState extends State<LoginScreen> {
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
-  TextEditingController nameController = new TextEditingController();
 
-  late LoginRequestModel loginrequestModel;
+  late LoginRequestModel loginRequestModel;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
-
   bool isApiCallprocess = false;
   bool hidePassword = true;
 
   @override
   void initState() {
     super.initState();
-    loginrequestModel = new LoginRequestModel();
+    loginRequestModel = new LoginRequestModel();
   }
 
   @override
@@ -78,8 +76,7 @@ class _SignupScreenState extends State<LoginScreen> {
                 SizedBox(height: height * 0.05),
                 TextFormField(
                     decoration: InputDecoration(labelText: 'Enter your email'),
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (input) => loginrequestModel.email = input,
+                    onSaved: (input) => loginRequestModel.email = input,
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
                       EmailValidator(errorText: 'Not A Valid Email')
@@ -87,8 +84,7 @@ class _SignupScreenState extends State<LoginScreen> {
                 SizedBox(height: height * 0.05),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Enter your password'),
-                  keyboardType: TextInputType.text,
-                  onSaved: (input) => loginrequestModel.password = input,
+                  onSaved: (input) => loginRequestModel.password = input,
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
                     MinLengthValidator(6,
@@ -119,18 +115,17 @@ class _SignupScreenState extends State<LoginScreen> {
                         final text = 'Login Succesfully';
                         final usernf = 'User not found';
                         final snackBar = SnackBar(content: Text(text));
-                        final snackBar1 =
-                            SnackBar(content: Text(usernf));
+                        final snackBar1 = SnackBar(content: Text(usernf));
                         if (validateAndSave()) {
                           setState(() {
                             isApiCallprocess = true;
                           });
                           APIService apiService = new APIService();
-                          apiService.login(loginrequestModel).then((value) => {
+                          apiService.login(loginRequestModel).then((value) => {
                                 setState(() {
                                   isApiCallprocess = false;
                                 }),
-                                if (value.token!.isNotEmpty)
+                                if (value.token?.isNotEmpty ?? false)
                                   {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(snackBar)
@@ -141,13 +136,7 @@ class _SignupScreenState extends State<LoginScreen> {
                                         .showSnackBar(snackBar1)
                                   }
                               });
-                          print(loginrequestModel.toJson());
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => HomePageScreen()));
-
-                          // ignore: deprecated_member_use
+                          print(loginRequestModel.toJson());
                         }
                       },
                       child: Container(
@@ -176,10 +165,10 @@ class _SignupScreenState extends State<LoginScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF363f93))),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignupScreen()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => SignupScreen()));
                         },
                         child: Text('Sign in',
                             style: TextStyle(color: Color(0xFF363f93)))),
