@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/register_model.dart';
-import 'package:formvalid/models/registerapi.dart';
+import 'package:http/http.dart' as http;
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/login.dart';
 
@@ -12,12 +14,33 @@ class SignupScreen extends StatefulWidget {
   _SignupScreenState createState() => _SignupScreenState();
 }
 
+class RegisterAPI {
+  Future<RegisterRequestModel> register(
+      String name, String email, String password) async {
+    String url = 'http://api.staging.tarsoft.co/api/register';
+
+    final response = await http.post(Uri.parse('$url'),
+        body: {'name': name, 'email': email, 'password': password});
+    if (response.statusCode == 200 || response.statusCode == 401) {
+      print(response.body);
+      return RegisterRequestModel.fromJson(json.decode(response.body));
+    } else {
+      print(response);
+      print(response.statusCode);
+      throw Exception('Failed to load data');
+    }
+  }
+}
+
 class _SignupScreenState extends State<SignupScreen> {
+  // ignore: unused_field
+
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
 
-  late RegisterRequestModel registerRequestModel;
+  late RegisterRequestModel _user;
+  // late RegisterModel _user;
   bool hidePassword = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
@@ -26,7 +49,8 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    registerRequestModel = new RegisterRequestModel();
+    // _user = new RegisterModel();
+    _user = new RegisterRequestModel();
   }
 
   @override
@@ -81,8 +105,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: height * 0.03,
                 ),
                 TextFormField(
-                    // controller: nameController,
-                    onSaved: (input) => registerRequestModel.name = input,
+                    controller: nameController,
+                    onSaved: (input) => _user.name = input,
                     decoration: InputDecoration(labelText: 'Enter your name'),
                     validator: (value) {
                       if (value!.isEmpty ||
@@ -94,8 +118,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     }),
                 SizedBox(height: height * 0.05),
                 TextFormField(
-                    // controller: emailController,
-                    onSaved: (input) => registerRequestModel.email = input,
+                    controller: emailController,
+                    onSaved: (input) => _user.email = input,
                     decoration: InputDecoration(labelText: 'Enter your email'),
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
@@ -103,8 +127,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ])),
                 SizedBox(height: height * 0.05),
                 TextFormField(
-                  // controller: passController,
-                  onSaved: (input) => registerRequestModel.password = input,
+                  controller: passController,
+                  onSaved: (input) => _user.password = input,
                   decoration: InputDecoration(labelText: 'Enter your password'),
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
@@ -114,38 +138,45 @@ class _SignupScreenState extends State<SignupScreen> {
                   obscureText: hidePassword,
                 ),
                 SizedBox(height: height * 0.05),
+                Text('${_user.name}'),
+                SizedBox(height: height * 0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
                         onPressed: () {
+                          final String name = nameController.text;
+                          final String email = emailController.text;
+                          final String password = passController.text;
+
                           if (validateAndSave()) {
                             setState(() {
                               isApiCallprocess = true;
                             });
                             RegisterAPI registerAPI = new RegisterAPI();
                             registerAPI
-                                .register(registerRequestModel)
+                                .register(name, email, password)
                                 .then((value) => {
                                       setState(() {
                                         isApiCallprocess = false;
                                       }),
-                                      if (value.token!.isNotEmpty)
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('Bad request boi')))
-                                        }
-                                      else
+                                      if (value.token?.isNotEmpty ?? false)
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content: Text(
                                                       'Register Successfully')))
                                         }
+                                      else
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
+                                                      // ignore: unrelated_type_equality_checks
+                                                      Text('${_user.message}')))
+                                        }
                                     });
-                            print(registerRequestModel.toJson());
+                            print(_user.toJson());
                           }
                         },
                         child: Container(

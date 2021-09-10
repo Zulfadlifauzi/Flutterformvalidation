@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/login_model.dart';
-import 'package:formvalid/models/loginapi.dart';
+import 'package:http/http.dart' as http;
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/signup.dart';
 
@@ -10,6 +12,22 @@ class LoginScreen extends StatefulWidget {
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
+}
+
+class APIService {
+  Future<LoginRequestModel> login(String email, String password) async {
+    String url = 'http://api.staging.tarsoft.co/api/login';
+
+    final response =
+        await http.post(Uri.parse('$url'), body: {'email': email, 'password': password});
+    if (response.statusCode == 200 || response.statusCode == 401) {
+      print(response.statusCode);
+      return LoginRequestModel.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 }
 
 class _SignupScreenState extends State<LoginScreen> {
@@ -75,6 +93,7 @@ class _SignupScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: height * 0.05),
                 TextFormField(
+                    controller: emailController,
                     decoration: InputDecoration(labelText: 'Enter your email'),
                     onSaved: (input) => loginRequestModel.email = input,
                     validator: MultiValidator([
@@ -83,6 +102,7 @@ class _SignupScreenState extends State<LoginScreen> {
                     ])),
                 SizedBox(height: height * 0.05),
                 TextFormField(
+                  controller: passController,
                   decoration: InputDecoration(labelText: 'Enter your password'),
                   onSaved: (input) => loginRequestModel.password = input,
                   validator: MultiValidator([
@@ -112,6 +132,9 @@ class _SignupScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Color(0xFF363f93)))),
                     TextButton(
                       onPressed: () {
+                          final String email = emailController.text;
+                          final String password = passController.text;
+
                         final text = 'Login Succesfully';
                         final usernf = 'User not found';
                         final snackBar = SnackBar(content: Text(text));
@@ -121,7 +144,7 @@ class _SignupScreenState extends State<LoginScreen> {
                             isApiCallprocess = true;
                           });
                           APIService apiService = new APIService();
-                          apiService.login(loginRequestModel).then((value) => {
+                          apiService.login(email,password).then((value) => {
                                 setState(() {
                                   isApiCallprocess = false;
                                 }),
