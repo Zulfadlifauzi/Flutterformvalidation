@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/login_model.dart';
+import 'package:formvalid/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/signup.dart';
@@ -33,6 +34,7 @@ class APIService {
 class _SignupScreenState extends State<LoginScreen> {
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
+
 
   late LoginRequestModel loginRequestModel;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -132,6 +134,10 @@ class _SignupScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Color(0xFF363f93)))),
                     TextButton(
                       onPressed: () {
+                          //  Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePageScreen()));
                           final String email = emailController.text;
                           final String password = passController.text;
 
@@ -188,10 +194,6 @@ class _SignupScreenState extends State<LoginScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF363f93))),
                         onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => SignupScreen()));
                         },
                         child: Text('Sign in',
                             style: TextStyle(color: Color(0xFF363f93)))),

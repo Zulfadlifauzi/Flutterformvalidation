@@ -8,6 +8,8 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +23,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.shopping_bag))
         ],
+      ),
+      body: Container(
       ),
     );
   }

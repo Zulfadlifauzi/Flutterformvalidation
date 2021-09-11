@@ -15,7 +15,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class RegisterAPI {
-  Future<RegisterRequestModel> register(
+  Future<RegisterResponse> register(
       String name, String email, String password) async {
     String url = 'http://api.staging.tarsoft.co/api/register';
 
@@ -23,34 +23,32 @@ class RegisterAPI {
         body: {'name': name, 'email': email, 'password': password});
     if (response.statusCode == 200 || response.statusCode == 401) {
       print(response.body);
-      return RegisterRequestModel.fromJson(json.decode(response.body));
+      // print(response.statusCode);
+      return RegisterResponse.fromJson(json.decode(response.body));
     } else {
-      print(response);
-      print(response.statusCode);
+      print(response.body);
       throw Exception('Failed to load data');
     }
   }
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // ignore: unused_field
 
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
-
-  late RegisterRequestModel _user;
-  // late RegisterModel _user;
-  bool hidePassword = true;
+  
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
+
+  late RegisterResponse _user;
+  bool hidePassword = true;
   bool isApiCallprocess = false;
 
   @override
   void initState() {
     super.initState();
-    // _user = new RegisterModel();
-    _user = new RegisterRequestModel();
+    _user = new RegisterResponse();
   }
 
   @override
@@ -138,8 +136,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   obscureText: hidePassword,
                 ),
                 SizedBox(height: height * 0.05),
-                Text('${_user.name}'),
-                SizedBox(height: height * 0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -165,15 +161,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content: Text(
-                                                      'Register Successfully')))
+                                                      '${_user.message}')))
                                         }
                                       else
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content:
-                                                      // ignore: unrelated_type_equality_checks
-                                                      Text('${_user.message}')))
+                                                      Text('Register Successfully')))
                                         }
                                     });
                             print(_user.toJson());

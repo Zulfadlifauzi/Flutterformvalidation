@@ -1,4 +1,4 @@
-class RegisterRequestModel {
+class RegisterResponse{
   String? email;
   String? password;
   String? name;
@@ -8,16 +8,16 @@ class RegisterRequestModel {
   String? success;
 
 
-  RegisterRequestModel({this.email, this.password, this.name,this.token,this.error,this.message,this.success});
+  RegisterResponse({this.email, this.password, this.name,this.token,this.error,this.message,this.success});
 
-  factory RegisterRequestModel.fromJson(Map<String, dynamic> json) =>
-      RegisterRequestModel(
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
+      RegisterResponse(
         name: json['name'], 
         email: json['email'], 
         password: json['password'],
         token: json['token'] == null ? json['token'] : '',
         error: json['error'],
-        message: json['Message'] != null ? json['message']:'',
+        message: json['email'],
         success: json['Success']
           );
 
