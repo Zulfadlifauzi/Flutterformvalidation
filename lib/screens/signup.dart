@@ -161,14 +161,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content: Text(
-                                                      '${_user.message}')))
+                                                      '${_user.name}')))
                                         }
                                       else
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content:
-                                                      Text('Register Successfully')))
+                                                      Text('${_user.message}')))
                                         }
                                     });
                             print(_user.toJson());
