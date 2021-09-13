@@ -23,7 +23,7 @@ class RegisterAPI {
         body: {'name': name, 'email': email, 'password': password});
     if (response.statusCode == 200 || response.statusCode == 401) {
       print(response.body);
-      // print(response.statusCode);
+      print(response.statusCode);
       return RegisterResponse.fromJson(json.decode(response.body));
     } else {
       print(response.body);
@@ -33,22 +33,21 @@ class RegisterAPI {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
-  
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
 
-  late RegisterResponse _user;
+   late RegisterResponse dataResponse;
   bool hidePassword = true;
   bool isApiCallprocess = false;
 
   @override
   void initState() {
     super.initState();
-    _user = new RegisterResponse();
+    dataResponse = new RegisterResponse();
   }
 
   @override
@@ -104,20 +103,17 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 TextFormField(
                     controller: nameController,
-                    onSaved: (input) => _user.name = input,
+                    onSaved: (input) => dataResponse.name = input,
                     decoration: InputDecoration(labelText: 'Enter your name'),
-                    validator: (value) {
-                      if (value!.isEmpty ||
-                          !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
-                        return 'Enter correct name';
-                      } else {
-                        return null;
-                      }
-                    }),
+                    validator: MultiValidator([
+                      RequiredValidator(errorText: 'Enter your name'),
+                    MinLengthValidator(5,
+                        errorText: 'Should be at least 5 characters')
+                    ])),
                 SizedBox(height: height * 0.05),
                 TextFormField(
                     controller: emailController,
-                    onSaved: (input) => _user.email = input,
+                    onSaved: (input) => dataResponse.email = input,
                     decoration: InputDecoration(labelText: 'Enter your email'),
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
@@ -126,7 +122,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: height * 0.05),
                 TextFormField(
                   controller: passController,
-                  onSaved: (input) => _user.password = input,
+                  onSaved: (input) => dataResponse.password = input,
                   decoration: InputDecoration(labelText: 'Enter your password'),
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
@@ -156,21 +152,22 @@ class _SignupScreenState extends State<SignupScreen> {
                                       setState(() {
                                         isApiCallprocess = false;
                                       }),
-                                      if (value.token?.isNotEmpty ?? true)
+                                      if (value.token?.isNotEmpty ?? false)
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content:
-                                                      Text('Register Successfully')))
-                                        }else{
-                                         ScaffoldMessenger.of(context)
+                                                      Text('${dataResponse.message}')))
+                                        }
+                                      else
+                                        {
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('${_user.message}')))
-
+                                                  content: Text(
+                                                      'Register Successfully')))
                                         }
                                     });
-                            print(_user.toJson());
+                            print(dataResponse.toJson());
                           }
                         },
                         child: Container(

@@ -139,7 +139,6 @@ class _SignupScreenState extends State<LoginScreen> {
                           //         builder: (context) => HomePageScreen()));
                           final String email = emailController.text;
                           final String password = passController.text;
-
                         final text = 'Login Succesfully';
                         final usernf = 'User not found';
                         final snackBar = SnackBar(content: Text(text));

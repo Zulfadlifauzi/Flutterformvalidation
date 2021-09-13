@@ -23,7 +23,7 @@ class ProgressHUD extends StatelessWidget {
     widgetList.add(child!);
     if (inAsyncCall) {
       final modal = new Stack(
-        children: [
+        children: <Widget>[
           new Opacity(
             opacity: opacity,
             child: ModalBarrier(dismissible: false, color: color),
