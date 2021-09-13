@@ -132,9 +132,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   obscureText: hidePassword,
                 ),
                 SizedBox(height: height * 0.05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                Column(
+                  children: <Widget>[
                     TextButton(
                         onPressed: () {
                           final String name = nameController.text;
@@ -171,16 +170,16 @@ class _SignupScreenState extends State<SignupScreen> {
                           }
                         },
                         child: Container(
-                          margin: EdgeInsets.only(left: 100.0),
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 35, top: 10),
+                            padding: const EdgeInsets.only( top: 10),
                             child: Text(
                               'Register',
                               style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                           height: 40,
-                          width: 120,
+                          width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5.0),
                             color: Color(0xFF363f93),

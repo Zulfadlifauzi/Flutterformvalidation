@@ -4,7 +4,7 @@ class RegisterResponse{
   String? name;
   String? token;
   String? message;
-  String? success;
+  bool? success;
 
 
   RegisterResponse({this.email, this.password, this.name,this.token,this.message,this.success});
@@ -16,7 +16,7 @@ class RegisterResponse{
         password: json['password'],
         token: json['token'] == null ? json['token'] : '',
         message: json['email'],
-        success: json['Success']
+        success: json['success']
           );
 
   Map<String, dynamic> toJson() {
