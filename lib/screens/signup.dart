@@ -156,19 +156,18 @@ class _SignupScreenState extends State<SignupScreen> {
                                       setState(() {
                                         isApiCallprocess = false;
                                       }),
-                                      if (value.token?.isNotEmpty ?? false)
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      '${_user.name}')))
-                                        }
-                                      else
+                                      if (value.token?.isNotEmpty ?? true)
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content:
+                                                      Text('Register Successfully')))
+                                        }else{
+                                         ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
                                                       Text('${_user.message}')))
+
                                         }
                                     });
                             print(_user.toJson());

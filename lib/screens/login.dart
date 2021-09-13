@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/login_model.dart';
-import 'package:formvalid/screens/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/signup.dart';
