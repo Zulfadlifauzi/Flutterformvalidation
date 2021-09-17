@@ -151,12 +151,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                       setState(() {
                                         isApiCallprocess = false;
                                       }),
-                                      if (value.token?.isNotEmpty ?? false)
+                                      if (value.token?.isNotEmpty ?? true)
                                         {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                                   content:
-                                                      Text('${dataResponse.message}')))
+                                                      Text('${value.success}')))
                                         }
                                       else
                                         {

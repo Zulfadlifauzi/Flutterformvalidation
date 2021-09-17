@@ -140,7 +140,7 @@ class _SignupScreenState extends State<LoginScreen> {
                           final String email = emailController.text;
                           final String password = passController.text;
                         final text = 'Login Succesfully';
-                        final usernf = 'User not found';
+                        final usernf = 'Invalid Credentials';
                         final snackBar = SnackBar(content: Text(text));
                         final snackBar1 = SnackBar(content: Text(usernf));
                         if (validateAndSave()) {
