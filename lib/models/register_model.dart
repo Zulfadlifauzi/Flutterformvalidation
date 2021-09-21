@@ -1,21 +1,21 @@
-class MessageResponse {
-  String? token;
-  String? error;
-  String? message;
+// class MessageResponse {
+//   String? token;
+//   String? error;
+//   String? message;
 
-  MessageResponse({this.token, this.error, this.message});
+//   MessageResponse({this.token, this.error, this.message});
 
-  // factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
-  //     LoginResponseModel(token: json['json'], error: json['error']);
-  // Map<String, dynamic> toJson() => {'token': token, 'error': error};
-  factory MessageResponse.fromJson(Map<String, dynamic> json) {
-    return MessageResponse(
-      token: json['token'] != null ? json['token'] : '',
-      error: json['error'] != null ? json['error'] : '',
-      message: json['message'] != null ? json['message'] : '',
-    );
-  }
-}
+//   // factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
+//   //     LoginResponseModel(token: json['json'], error: json['error']);
+//   // Map<String, dynamic> toJson() => {'token': token, 'error': error};
+//   factory MessageResponse.fromJson(Map<String, dynamic> json) {
+//     return MessageResponse(
+//       token: json['token'] != null ? json['token'] : '',
+//       error: json['error'] != null ? json['error'] : '',
+//       message: json['message'] != null ? json['message'] : '',
+//     );
+//   }
+// }
 
 class RegisterResponse {
   String? email;

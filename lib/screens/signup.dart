@@ -26,7 +26,6 @@ class RegisterAPI {
       print(response.statusCode);
       return RegisterResponse.fromJson(json.decode(response.body));
     } else {
-      print(response.body);
       throw Exception('Failed to load data');
     }
   }
