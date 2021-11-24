@@ -18,8 +18,8 @@ class APIService {
   Future<LoginRequestModel> login(String email, String password) async {
     String url = 'http://api.staging.tarsoft.co/api/login';
 
-    final response =
-        await http.post(Uri.parse('$url'), body: {'email': email, 'password': password});
+    final response = await http
+        .post(Uri.parse('$url'), body: {'email': email, 'password': password});
     if (response.statusCode == 200 || response.statusCode == 401) {
       print(response.statusCode);
       return LoginRequestModel.fromJson(json.decode(response.body));
@@ -27,13 +27,11 @@ class APIService {
       throw Exception('Failed to load data');
     }
   }
-
 }
 
 class _SignupScreenState extends State<LoginScreen> {
   TextEditingController passController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
-
 
   late LoginRequestModel loginRequestModel;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -133,12 +131,12 @@ class _SignupScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Color(0xFF363f93)))),
                     TextButton(
                       onPressed: () {
-                          //  Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => HomePageScreen()));
-                          final String email = emailController.text;
-                          final String password = passController.text;
+                        //  Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => HomePageScreen()));
+                        final String email = emailController.text;
+                        final String password = passController.text;
                         final text = 'Login Succesfully';
                         final usernf = 'Invalid Credentials';
                         final snackBar = SnackBar(content: Text(text));
@@ -148,19 +146,19 @@ class _SignupScreenState extends State<LoginScreen> {
                             isApiCallprocess = true;
                           });
                           APIService apiService = new APIService();
-                          apiService.login(email,password).then((value) => {
+                          apiService.login(email, password).then((value) => {
                                 setState(() {
                                   isApiCallprocess = false;
                                 }),
                                 if (value.token?.isNotEmpty ?? false)
                                   {
                                     ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar)
+                                        .showSnackBar(snackBar1)
                                   }
                                 else
                                   {
                                     ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar1)
+                                        .showSnackBar(snackBar)
                                   }
                               });
                           print(loginRequestModel.toJson());
@@ -191,8 +189,7 @@ class _SignupScreenState extends State<LoginScreen> {
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF363f93))),
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                         child: Text('Sign in',
                             style: TextStyle(color: Color(0xFF363f93)))),
                     Text(
