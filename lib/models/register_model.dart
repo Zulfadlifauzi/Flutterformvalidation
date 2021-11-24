@@ -1,54 +1,58 @@
-// class MessageResponse {
-//   String? token;
-//   String? error;
-//   String? message;
+import 'dart:convert';
 
-//   MessageResponse({this.token, this.error, this.message});
+Register registerFromJson(String str) => Register.fromJson(json.decode(str));
 
-//   // factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
-//   //     LoginResponseModel(token: json['json'], error: json['error']);
-//   // Map<String, dynamic> toJson() => {'token': token, 'error': error};
-//   factory MessageResponse.fromJson(Map<String, dynamic> json) {
-//     return MessageResponse(
-//       token: json['token'] != null ? json['token'] : '',
-//       error: json['error'] != null ? json['error'] : '',
-//       message: json['message'] != null ? json['message'] : '',
-//     );
-//   }
-// }
+String registerToJson(Register data) => json.encode(data.toJson());
 
-class RegisterResponse {
-  String? email;
-  String? password;
-  String? name;
-  String? token;
-  String? message;
+class Register {
+  Register({
+    this.success,
+    this.message,
+  });
+
   bool? success;
+  Message? message;
 
-  RegisterResponse(
-      {this.email,
-      this.password,
-      this.name,
-      this.token,
-      this.message,
-      this.success});
+  factory Register.fromJson(Map<String, dynamic> json) => Register(
+        success: json["success"],
+        message: Message.fromJson(json["message"]),
+      );
 
-  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
-      RegisterResponse(
-          name: json['name'],
-          email: json['email'],
-          password: json['password'],
-          token: json['token'] == null ? json['token'] : '',
-          message: json['email'],
-          success: json['success']);
+  Map<String, dynamic> toJson() => {
+        "success": success,
+        "message": message!.toJson(),
+      };
+}
 
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> map = {
-      'name': name,
-      'email': email,
-      'password': password,
-    };
+class Message {
+  Message({
+    this.name,
+    this.email,
+    this.password,
+  });
 
-    return map;
-  }
+  List<String>? name;
+  List<String>? email;
+  List<String>? password;
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+        name:
+            List<String>.from(json["name"].map((userRegister) => userRegister))
+                .toList(),
+        email:
+            List<String>.from(json["email"].map((userRegister) => userRegister))
+                .toList(),
+        password: List<String>.from(
+            json["password"].map((userRegister) => userRegister)).toList(),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": List<dynamic>.from(name!.map((userRegister) => userRegister))
+            .toList(),
+        "email": List<dynamic>.from(email!.map((userRegister) => userRegister))
+            .toList(),
+        "password":
+            List<dynamic>.from(password!.map((userRegister) => userRegister))
+                .toList(),
+      };
 }

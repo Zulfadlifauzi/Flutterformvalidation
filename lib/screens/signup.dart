@@ -1,34 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:formvalid/models/register_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:formvalid/progressHUD.dart';
 import 'package:formvalid/screens/login.dart';
+import 'package:formvalid/service/apiservice.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
   _SignupScreenState createState() => _SignupScreenState();
-}
-
-class RegisterAPI {
-  Future<RegisterResponse> register(
-      String name, String email, String password) async {
-    String url = 'http://api.staging.tarsoft.co/api/register';
-
-    final response = await http.post(Uri.parse('$url'),
-        body: {'name': name, 'email': email, 'password': password});
-    if (response.statusCode == 200 || response.statusCode == 401) {
-      print(response.body);
-      print(response.statusCode);
-      return RegisterResponse.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
 }
 
 class _SignupScreenState extends State<SignupScreen> {
@@ -39,14 +20,14 @@ class _SignupScreenState extends State<SignupScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<FormState>();
 
-   late RegisterResponse dataResponse;
+  late Register dataResponse;
   bool hidePassword = true;
   bool isApiCallprocess = false;
 
   @override
   void initState() {
     super.initState();
-    dataResponse = new RegisterResponse();
+    dataResponse = new Register();
   }
 
   @override
@@ -102,17 +83,17 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 TextFormField(
                     controller: nameController,
-                    onSaved: (input) => dataResponse.name = input,
+                    onSaved: (input) => dataResponse.message!.name.toString(),
                     decoration: InputDecoration(labelText: 'Enter your name'),
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your name'),
-                    MinLengthValidator(5,
-                        errorText: 'Should be at least 5 characters')
+                      MinLengthValidator(5,
+                          errorText: 'Should be at least 5 characters')
                     ])),
                 SizedBox(height: height * 0.05),
                 TextFormField(
                     controller: emailController,
-                    onSaved: (input) => dataResponse.email = input,
+                    onSaved: (input) => dataResponse.message!.email.toString(),
                     decoration: InputDecoration(labelText: 'Enter your email'),
                     validator: MultiValidator([
                       RequiredValidator(errorText: 'Enter your email'),
@@ -121,7 +102,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: height * 0.05),
                 TextFormField(
                   controller: passController,
-                  onSaved: (input) => dataResponse.password = input,
+                  onSaved: (input) => dataResponse.message!.password.toString(),
                   decoration: InputDecoration(labelText: 'Enter your password'),
                   validator: MultiValidator([
                     RequiredValidator(errorText: 'Enter your password'),
@@ -134,43 +115,27 @@ class _SignupScreenState extends State<SignupScreen> {
                 Column(
                   children: <Widget>[
                     TextButton(
-                        onPressed: () {
-                          final String name = nameController.text;
-                          final String email = emailController.text;
-                          final String password = passController.text;
-
+                        onPressed: () async {
+                          final getSuccess = await APIregisterservice()
+                              .register(nameController.text,
+                                  emailController.text, passController.text);
+                          if (getSuccess != false) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('${getSuccess}')));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content:
+                                    Text(dataResponse.message.toString())));
+                          }
                           if (validateAndSave()) {
                             setState(() {
                               isApiCallprocess = true;
                             });
-                            RegisterAPI registerAPI = new RegisterAPI();
-                            registerAPI
-                                .register(name, email, password)
-                                .then((value) => {
-                                      setState(() {
-                                        isApiCallprocess = false;
-                                      }),
-                                      if (value.token?.isNotEmpty ?? true)
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('${value.success}')))
-                                        }
-                                      else
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      'Register Successfully')))
-                                        }
-                                    });
-                            print(dataResponse.toJson());
                           }
                         },
                         child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.only( top: 10),
+                            padding: const EdgeInsets.only(top: 10),
                             child: Text(
                               'Register',
                               style: TextStyle(color: Colors.white),
